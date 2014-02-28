@@ -9,22 +9,22 @@ from scipy.stats import scoreatpercentile
 LL = np.loadtxt('global_soils_default.txt');
 LL = LL[:,2:4]
 
-matrix_to_save = np.hstack((LL, np.empty((LL.shape[0], 6), float)))
-matrix_to_save[:,2:10] = np.NaN
+matrix_to_save = np.hstack((LL, np.empty((LL.shape[0], 9), float)))
+matrix_to_save[:,2:11] = np.NaN
 
-# PARAMS: b_infilt, Ds, Dsmax, Ws, layer2depth, layer3depth
-param_mins = np.transpose(np.array([0.001, 0.001, 0.1, 0.2, 0.1, 0.1]))
-param_maxes = np.transpose(np.array([1.0, 1.0, 50.0, 1.0, 3.0, 3.0]))
+# PARAMS: b_infilt, Ds, Dsmax, Ws, layer2depth, layer3depth, rmin, expt, Ksat
+param_mins = np.transpose(np.array([-3.0, -3.0, -1.0, 0.2, 0.1, 0.1, -1.0, 1.0, 2.0]))
+param_maxes = np.transpose(np.array([0.0, 0.0, 1.69897, 1.0, 3.0, 3.0, 1.0, 30.0, 4.0]))
 
-b_infilt -3.0 0.0
-Ds -3.0 0.0
-Dsmax -1.0 1.69897
-Ws 0.2 1.0
-layer2depth 0.1 3.0
-layer3depth 0.1 3.0
-rmin -1.0 1.0
-expt 1.0 30.0
-Ksat 3.0 5.0
+# b_infilt -3.0 0.0
+# Ds -3.0 0.0
+# Dsmax -1.0 1.69897
+# Ws 0.2 1.0
+# layer2depth 0.1 3.0
+# layer3depth 0.1 3.0
+# rmin -1.0 1.0
+# expt 1.0 30.0
+# Ksat 2.0 4.0
 
 for i in xrange(0, LL.shape[0]):
     
@@ -45,6 +45,6 @@ for i in xrange(0, LL.shape[0]):
                 params[j,2:] = (params[j,2:] - param_mins)/(param_maxes - param_mins)
 
             for j in range(2, params.shape[1]):
-                matrix_to_save[i,2+j] = np.std(params[:,j])
+                matrix_to_save[i,j] = np.std(params[:,j])
 
 np.savetxt('vic_hcube_param_stdevs.txt', matrix_to_save)
