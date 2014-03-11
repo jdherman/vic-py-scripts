@@ -5,6 +5,7 @@ import math
 import sys
 
 filenum = int(sys.argv[1])
+mpisize = int(sys.argv[2])
 
 LL = np.loadtxt('global_soils_default.txt');
 LL = LL[:,2:4]
@@ -19,8 +20,8 @@ for i in xrange(0, LL[:,0].size):
     
     output_filename = 'file_' + '%d' % filenum + '/txt/hcube_lat_' + '%.6f' % LL[i,0] + '_long_' + '%.6f' % LL[i,1] + '.txt'
     
-    if(i % 100 == 0):
-        print 'Job ' + '%d' % filenum + ': ' + '%d' % i + '/15836'
+    # if(i % 100 == 0):
+    #     print 'Job ' + '%d' % filenum + ': ' + '%d' % i + '/15836'
     
     if(os.path.isfile(output_filename)):
         try:
@@ -49,4 +50,4 @@ for i in xrange(0, LL[:,0].size):
 
             matrix_to_save[i,2:10] = [num_solutions, min_error, average, max_error, twenty, ten, five, one];
 
-np.savetxt('vic_1K_error_measures/vic_error_9p_1K_' + '%d' % filenum + '.txt', matrix_to_save);
+np.savetxt('vic_10K_error_measures/vic_error_9p_10K_' + '%d' % filenum + '.txt', matrix_to_save);
