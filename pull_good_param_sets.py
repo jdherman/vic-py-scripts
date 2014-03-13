@@ -10,6 +10,7 @@ LL = LL[:,2:4]
 icell = int(sys.argv[1])
 mpisize = int(sys.argv[2])
 num_files = 200
+ERROR_THRESHOLD = 0.05
 
 OBS = np.loadtxt('VIC_GRDC_Monthly_Climatology.txt', delimiter=',', skiprows=1)
 
@@ -41,7 +42,7 @@ for filenum in xrange(0, num_files):
             for j in xrange(0, error_values.size):
                 error_values[j] = math.fabs(np.sum(current_obs) - np.sum(output[j,:]))/np.sum(current_obs)
 
-            idx = np.flatnonzero(error_values < 0.05)
+            idx = np.flatnonzero(error_values < ERROR_THRESHOLD)
 
             if(idx.size > 0):
                 idx = np.reshape(idx, (idx.shape[0], 1))
