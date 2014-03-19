@@ -6,7 +6,7 @@ import matplotlib.cm as cm
 from mpl_toolkits.basemap import Basemap
 
 hydrofile = 'aero_min_revisit_rates.csv'
-aerofile = 'aero_coverage_f1.csv'
+aerofile = 'aero_coverage_f3.csv'
 # Set up the map
 # lat_ts is the latitude of true scale.
 # resolution = 'c' means use crude resolution coastlines.
@@ -40,6 +40,8 @@ a_lat = data[0]
 a_lon = data[1]
 a_lon[a_lon < 0] += 360 # convert to [0,360] grid
 max_revisit = data[2]/60
+avg_revisit = data[5]/60
+ninety_revisit = data[6]/60
 
 array = np.empty((180,360))
 array[:] = np.NAN;
@@ -53,7 +55,7 @@ for i in xrange(0, lat.size):
     ilat = int(lat[i] + 90.0 - 0.5)
     ilon = int(lon[i] - 0.5)
     idx = np.where((np.floor(a_lat) == np.floor(lat[i])) & (np.floor(a_lon) == np.floor(lon[i])))
-    array[ilat,ilon] = qsurf[i] #max(max_revisit[idx] - sm1[i], 0.001)
+    array[ilat,ilon] = max(ninety_revisit[idx] - qsurf[i], 0.001)
     
 array[array == 0] = np.NaN
 #m.contourf(x, y, array, np.arange(-1.0, 1.05, 0.1), cmap=cm.jet_r)
@@ -64,9 +66,9 @@ fire2 = mpl.colors.ListedColormap(np.power(np.loadtxt('cmaps/fire.txt'),1.5)/np.
 
 array_mask = np.ma.masked_where(np.isnan(array),array)
 
-m.pcolormesh(x,y,array_mask,vmin=1.0,vmax=8.0, cmap=fireflipsqrt, rasterized=True)
+m.pcolormesh(x,y,array_mask,vmin=0.0,vmax=7.0, cmap=fire2, rasterized=True)
 cbar = m.colorbar()
 cbar.solids.set_edgecolor("face")
-cbar.set_ticks([1,2,3,4,5,6,7,8])
-plt.title("Target qsurf")
+cbar.set_ticks([0,1,2,3,4,5,6,7])
+plt.title("Deficit (hrs): F3 with 90% revisit")
 plt.show()
