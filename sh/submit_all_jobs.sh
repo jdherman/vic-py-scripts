@@ -27,7 +27,7 @@ do
   elif [ $GLOBNUM -ne $GLOBNUM_PREV ]
   then
     DEPEND_PREV=$DEPEND
-    DEPEND=`qsub -N ${NAME} -W depend=afterok${DEPEND_PREV} -v NUM=${FILENUM} Run_Hcube.sh`
+    DEPEND=:`qsub -N ${NAME} -W depend=afterok${DEPEND_PREV} -v NUM=${FILENUM} Run_Hcube.sh`
     GLOBNUM_PREV=$GLOBNUM
 
   # If we're in the same glob as the previous iteration, use the same dependency string
