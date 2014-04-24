@@ -4,7 +4,9 @@ import os
 import math
 import sys
 
-LL = np.loadtxt('global_soils_default.txt');
+PATH = '/u/sciteam/jdh33/scratch/vic_hypercube_output_10K'
+
+LL = np.loadtxt('%s/global_soils_default.txt' % PATH);
 LL = LL[:,2:4]
 
 ERROR_THRESHOLD = int(sys.argv[1])/100
@@ -12,7 +14,7 @@ icell = int(sys.argv[2])
 mpisize = int(sys.argv[3])
 num_files = 200
 
-OBS = np.loadtxt('VIC_GRDC_Monthly_Climatology.txt', delimiter=',', skiprows=1)
+OBS = np.loadtxt('%s/VIC_GRDC_Monthly_Climatology.txt' % PATH, delimiter=',', skiprows=1)
 
 i = icell
 matrix_to_save = []
@@ -24,7 +26,7 @@ current_obs = OBS[np.where((OBS[:,0] == LL[i,0]) & (OBS[:,1] == LL[i,1])), 2:15]
 
 for filenum in xrange(0, num_files):
 
-    output_filename = 'file_' + '%d' % filenum + '/txt/hcube_lat_' + '%.6f' % LL[i,0] + '_long_' + '%.6f' % LL[i,1] + '.txt'
+    output_filename = '%s' % PATH + 'file_' + '%d' % filenum + '/txt/hcube_lat_' + '%.6f' % LL[i,0] + '_long_' + '%.6f' % LL[i,1] + '.txt'
     param_filename = '/u/sciteam/jdh33/projects/VIC/vic_hypercube_9_50_' + '%d' % filenum + '.txt'
     params = np.loadtxt(param_filename)        
     
@@ -51,4 +53,4 @@ for filenum in xrange(0, num_files):
                     matrix_to_save = np.vstack((matrix_to_save, params_to_save))
 
 if(matrix_to_save.size > 0):
-    np.savetxt('params_below_' + '%d' % int(sys.argv[1]) + 'percent_error/params_lat_' + '%.6f' % LL[i,0] + '_long_' + '%.6f' % LL[i,1] + '.txt', matrix_to_save)
+    np.savetxt('%s' % PATH + 'params_below_' + '%d' % int(sys.argv[1]) + 'percent_error/params_lat_' + '%.6f' % LL[i,0] + '_long_' + '%.6f' % LL[i,1] + '.txt', matrix_to_save)

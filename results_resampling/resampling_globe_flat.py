@@ -29,7 +29,7 @@ for i in xrange(0, lat.size):
     ilat = int(lat[i] + 90 - 0.5)
     ilon = int(lon[i] - 0.5)
     idx = np.where((np.floor(a_lat) == np.floor(lat[i])) & (np.floor(a_lon) == np.floor(lon[i])))
-    array[ilat,ilon] = max(max_revisit[idx] - qsurf[i], 0.001)
+    array[ilat,ilon] = max(max_revisit[idx] - sm1[i], 0.001)
     
 array[array == 0] = np.NaN
 #array,lons = shiftgrid(180., array, np.arange(0,360), start=False)
@@ -66,6 +66,6 @@ for ll in xrange(-180,180):
   m.pcolor(x,y,array_mask,vmin=0.0,vmax=7.0, cmap=fire2)
   cbar = m.colorbar()
   cbar.set_ticks([0,1,2,3,4,5,6,7])
-  plt.title("Coverage Deficit: Surface Runoff (hrs)")
+  plt.title("Coverage Deficit: Soil Moisture (hrs)")
   plt.savefig("figures/globeframes_covdef/frame{0}".format(str(ll+180).rjust(3, "0")))
   plt.clf()

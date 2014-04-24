@@ -7,10 +7,11 @@ import sys
 filenum = int(sys.argv[1])
 mpisize = int(sys.argv[2])
 
-LL = np.loadtxt('global_soils_default.txt');
+PATH = '/u/sciteam/jdh33/scratch/vic_hypercube_output_10K'
+LL = np.loadtxt('%s/global_soils_default.txt' % PATH);
 LL = LL[:,2:4]
 
-OBS = np.loadtxt('VIC_GRDC_Monthly_Climatology.txt', delimiter=',', skiprows=1)
+OBS = np.loadtxt('%s/VIC_GRDC_Monthly_Climatology.txt' % PATH, delimiter=',', skiprows=1)
 
 # Calculate and save the sum and max errors, along with size of set.
 matrix_to_save = np.hstack((LL[:,0:2], np.zeros((LL[:,1].size, 8), float)))
@@ -18,7 +19,7 @@ matrix_to_save[:, 2:10] = np.NaN
 
 for i in xrange(0, LL[:,0].size):
     
-    output_filename = 'file_' + '%d' % filenum + '/txt/hcube_lat_' + '%.6f' % LL[i,0] + '_long_' + '%.6f' % LL[i,1] + '.txt'
+    output_filename = '%s' % PATH + '/file_' + '%d' % filenum + '/txt/hcube_lat_' + '%.6f' % LL[i,0] + '_long_' + '%.6f' % LL[i,1] + '.txt'
     
     # if(i % 100 == 0):
     #     print 'Job ' + '%d' % filenum + ': ' + '%d' % i + '/15836'
@@ -50,4 +51,4 @@ for i in xrange(0, LL[:,0].size):
 
             matrix_to_save[i,2:10] = [num_solutions, min_error, average, max_error, twenty, ten, five, one];
 
-np.savetxt('vic_10K_error_measures/vic_error_9p_10K_' + '%d' % filenum + '.txt', matrix_to_save);
+np.savetxt('%s' % PATH + '/vic_10K_error_measures/vic_error_9p_10K_' + '%d' % filenum + '.txt', matrix_to_save);
