@@ -27,7 +27,7 @@ current_obs = OBS[np.where((OBS[:,0] == LL[i,0]) & (OBS[:,1] == LL[i,1])), 2:15]
 for filenum in xrange(0, num_files):
 
     output_filename = '%s' % PATH + 'file_' + '%d' % filenum + '/txt/hcube_lat_' + '%.6f' % LL[i,0] + '_long_' + '%.6f' % LL[i,1] + '.txt'
-    param_filename = '/u/sciteam/jdh33/projects/VIC/vic_hypercube_9_50_' + '%d' % filenum + '.txt'
+    param_filename = '/u/sciteam/jdh33/projects/VIC/LHS/vic_hypercube_9_50_' + '%d' % filenum + '.txt'
     params = np.loadtxt(param_filename)        
     
     if(os.path.isfile(output_filename)):
