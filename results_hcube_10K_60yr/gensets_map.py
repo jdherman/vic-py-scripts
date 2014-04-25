@@ -3,20 +3,8 @@ import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 from mpl_toolkits.basemap import Basemap
 
-# Set up the map
-# lat_ts is the latitude of true scale.
-# resolution = 'c' means use crude resolution coastlines.
-# m = Basemap(projection='merc',llcrnrlat=-65,urcrnrlat=80,\
-#            llcrnrlon=0,urcrnrlon=360,lat_ts=0,resolution='c')
-m = Basemap(llcrnrlat=-89.5,urcrnrlat=89.5,\
-            llcrnrlon=0.5,urcrnrlon=359.5,resolution='c')
-#m.drawcoastlines(color='0.2')
-m.drawcountries(color='0.4')
-#m.fillcontinents(color='white',lake_color='gray')
-#m.drawparallels(np.arange(-90.,91.,30.), labels=[1,0,0,1])
-#m.drawmeridians(np.arange(0., 360., 60.), labels=[1,0,0,1])
-m.drawmapboundary(fill_color='0.8')
-m.shadedrelief(scale=0.1, origin='lower')
+m = mapformat()
+
 # Set up the color data
 
 array = np.empty((180,360))

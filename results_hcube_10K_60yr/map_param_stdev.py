@@ -3,23 +3,11 @@ import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 from mpl_toolkits.basemap import Basemap
 import math
+import mapformat
 
 filename = 'vic_hcube_param_stdevs.txt'
 
-# Set up the map
-# lat_ts is the latitude of true scale.
-# resolution = 'c' means use crude resolution coastlines.
-# m = Basemap(projection='merc',llcrnrlat=-65,urcrnrlat=80,\
-#            llcrnrlon=0,urcrnrlon=360,lat_ts=0,resolution='c')
-m = Basemap(llcrnrlat=-89.5,urcrnrlat=89.5,\
-            llcrnrlon=0.5,urcrnrlon=359.5,resolution='c')
-#m.drawcoastlines(color='0.2')
-m.drawcountries(color='0.4')
-#m.fillcontinents(color='white',lake_color='zero')
-#m.drawparallels(np.arange(-90.,91.,30.), labels=[1,0,0,1])
-#m.drawmeridians(np.arange(0., 360., 60.), labels=[1,0,0,1])
-m.drawmapboundary(fill_color='0.8')
-m.shadedrelief(scale=0.1, origin='lower')
+m = mapformat()
 
 # Set up the color data
 data = np.transpose(np.loadtxt(filename))
@@ -53,8 +41,9 @@ for i in xrange(0, lat.size):
 # ice = np.concatenate((zero,ice[:-1,:]), axis=0)
 # ice = mpl.colors.ListedColormap(ice)
     
-# array[array == 0] = np.NaN
-m.imshow(array,interpolation='nearest',vmin=0.0,vmax=1/math.sqrt(12), cmap=cm.jet)
+array_mask = np.ma.masked_where(np.isnan(array),array)
+
+m.pcolormesh(x,y,array_mask, vmin=0.0,vmax=1/math.sqrt(12), cmap=cm.jet, rasterized=True, edgecolor='0.6', linewidth=0)
 cbar = m.colorbar()
 cbar.solids.set_edgecolor("face")
 cbar.set_ticks([0,1/(4*math.sqrt(12)),1/(2*math.sqrt(12)),3/(4*math.sqrt(12)),1/math.sqrt(12)])
