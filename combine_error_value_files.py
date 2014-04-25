@@ -12,10 +12,10 @@ num_files = 200
 matrix_to_save = np.hstack((LL[:,0:2], np.zeros((LL[:,1].size, 7), float)))
 matrix_to_save[:, 2:9] = np.NaN
 
-all_error_values = np.zeros((20, LL[:,1].size, 10), float)
+all_error_values = np.zeros((num_files, LL[:,1].size, 10), float)
 
 for i in xrange(0, num_files):
-    all_error_values[i,:,:] = np.loadtxt('vic_1K_error_measures/vic_error_9p_1K_' + '%d' % i + '.txt')
+    all_error_values[i,:,:] = np.loadtxt('vic_10K_error_measures/vic_error_9p_10K_' + '%d' % i + '.txt')
 
 for i in xrange(0, LL[:,0].size):
 
