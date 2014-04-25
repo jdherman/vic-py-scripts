@@ -32,7 +32,7 @@ x,y = m(x,y)
 for i in xrange(0, lat.size):
     ilat = int(lat[i] + 90.0 - 0.5)
     ilon = int(lon[i] - 0.5)
-    array[ilat,ilon] = one[i]*100
+    array[ilat,ilon] = min_error[i]*100
 
 zero = 0.9*np.array([1,0,0]).reshape(1,3)
 ice = np.loadtxt('cmaps/ice.txt')/255;
@@ -41,9 +41,9 @@ ice = mpl.colors.ListedColormap(ice)
 
 array_mask = np.ma.masked_where(np.isnan(array),array)
 
-m.pcolormesh(x,y,array_mask,vmin=0.0,vmax=10.0, cmap=ice, rasterized=True, edgecolor='0.6', linewidth=0)
+m.pcolormesh(x,y,array_mask,vmin=0.0,vmax=5.0, cmap=cm.jet, rasterized=True, edgecolor='0.6', linewidth=0)
 cbar = m.colorbar()
 cbar.solids.set_edgecolor("face")
-cbar.set_ticks([0,2,4,6,8,10])
-plt.title("VIC - Fraction Below 20% Error")
+cbar.set_ticks([0,1,2,3,4,5])
+plt.title("VIC - Minimum Error")
 plt.show()
