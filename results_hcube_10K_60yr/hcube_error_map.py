@@ -40,7 +40,7 @@ ice = np.concatenate((zero,ice[:-1,:]), axis=0)
 ice = mpl.colors.ListedColormap(ice)
 
 array_mask = np.ma.masked_where(np.isnan(array),array)
-
+print np.shape(array_mask)
 m.pcolormesh(x,y,array_mask,vmin=0.0,vmax=5.0, cmap=cm.jet, rasterized=True, edgecolor='0.6', linewidth=0)
 cbar = m.colorbar()
 cbar.solids.set_edgecolor("face")
