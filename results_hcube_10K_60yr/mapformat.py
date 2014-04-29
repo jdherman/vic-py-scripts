@@ -10,7 +10,7 @@ def mapformat():
   m.drawmapboundary(fill_color='white', zorder=-1)
   m.fillcontinents(color='0.8', lake_color='white', zorder=0)
 
-  #m.drawcoastlines(color='0.6', linewidth=0.5)
+  m.drawcoastlines(color='0.6', linewidth=0.5)
   m.drawcountries(color='0.6', linewidth=0.5)
 
   m.drawparallels(np.arange(-90.,91.,30.), labels=[1,0,0,1], dashes=[1,0], linewidth=0.25, color='0.5')
