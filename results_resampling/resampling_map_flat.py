@@ -55,9 +55,8 @@ for i in xrange(0, lat.size):
     ilat = int(lat[i] + 90.0 - 0.5)
     ilon = int(lon[i] - 0.5)
     idx = np.where((np.floor(a_lat) == np.floor(lat[i])) & (np.floor(a_lon) == np.floor(lon[i])))
-    array[ilat,ilon] = max(ninety_revisit[idx] - qsurf[i], 0.001)
+    array[ilat,ilon] = max(max_revisit[idx] - qsurf[i], 0.001)
     
-array[:] = np.NaN
 #m.contourf(x, y, array, np.arange(-1.0, 1.05, 0.1), cmap=cm.jet_r)
 ice = mpl.colors.ListedColormap(np.loadtxt('cmaps/ice.txt')/255)
 fire = mpl.colors.ListedColormap(np.loadtxt('cmaps/fire.txt')/255)
@@ -70,5 +69,5 @@ m.pcolormesh(x,y,array_mask,vmin=0.0,vmax=7.0, cmap=fire2, rasterized=True, edge
 cbar = m.colorbar()
 cbar.solids.set_edgecolor("face")
 cbar.set_ticks([0,1,2,3,4,5,6,7])
-plt.title("Deficit (hrs): F3 with 90% revisit")
+plt.title("Deficit (hrs): F3 with Max Revisit")
 plt.show()
