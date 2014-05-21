@@ -48,7 +48,7 @@ for i in xrange(0, lat.size):
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Then get the original deficit from the full constellation
 
-aerofile = 'aero_coverage_f3.csv'
+aerofile = 'aero_coverage_f1.csv'
 
 data = np.transpose(np.loadtxt(aerofile, delimiter=','))
 a_lat = data[0]
@@ -73,8 +73,8 @@ for i in xrange(0, lat.size):
 array = (1 - (array_rec)/(array_fc))*100
 array_mask = np.ma.masked_where(np.isnan(array),array)
 
-print np.min(np.min(array_mask))
-m.pcolormesh(x,y,array_mask,vmin=-100,vmax=100, cmap=redblue, rasterized=True, edgecolor='0.6', linewidth=0)
+#print np.min(np.min(array_mask))
+m.pcolormesh(x,y,array_mask,vmin=-50,vmax=50, cmap=redblue, rasterized=True, edgecolor='0.6', linewidth=0)
 cbar = m.colorbar()
 cbar.solids.set_edgecolor("face")
 cbar.set_ticks([-100,-50,0,50,100])
