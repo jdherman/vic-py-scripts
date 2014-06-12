@@ -6,8 +6,9 @@ import matplotlib as mpl
 from mapformat import mapformat
 from netCDF4 import Dataset
 
-root_grp = Dataset('climatology-nc/vic_LHS_climatology_cells.nc')
+root_grp = Dataset('climatology-nc/vic_LHS_climatology_cells_v2.nc')
 vic_runoff = root_grp.variables['vic_runoff']
+obs_runoff = root_grp.variables['obs_runoff']
 lat = root_grp.variables['latitude'][:]
 lon = root_grp.variables['longitude'][:]
 
@@ -25,7 +26,7 @@ for i in xrange(0, lat.size):
     ilat = int(lat[i] + 90.0)
     ilon = int(lon[i] - 0.5)
     if ilon < 179 or ilon > 181: # HACK: to avoid date-line wraparound problem
-      array[ilat,ilon] = vic_runoff[i,ensemble,month]
+      array[ilat,ilon] = obs_runoff[i,month]
 
 array, x = shiftgrid(180, array, x)
 array_mask = np.ma.masked_invalid(array)

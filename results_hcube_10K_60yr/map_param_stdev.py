@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 from mpl_toolkits.basemap import Basemap
 import math
-import mapformat
+from mapformat import mapformat
 
 filename = 'vic_hcube_param_stdevs.txt'
 
