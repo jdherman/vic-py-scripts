@@ -5,7 +5,7 @@ from mpl_toolkits.basemap import Basemap
 import matplotlib as mpl
 from mapformat import mapformat
 
-filename = 'vic_error_9p_10K_monthly_nse.txt'
+filename = 'vic_error_9p_10K_monthly_kge.txt'
 
 m = mapformat()
 
@@ -13,13 +13,13 @@ m = mapformat()
 data = np.transpose(np.loadtxt(filename))
 lat = data[0] 
 lon = data[1]
-zero = data[2]
-five = data[3] # calculated wrong ... don't use.
-seventyfive = data[4]
-eight = data[5]
-nine = data[6]
-# five = data[7]
-# one = data[8]
+min_kge = data[2]
+mean_kge = data[3] # calculated wrong ... don't use.
+max_kge = data[4]
+five = data[5]
+seventyfive = data[6]
+eight = data[7]
+nine = data[8]
 
 array = np.empty((180,360))
 array[:] = np.NAN;
@@ -32,7 +32,7 @@ x,y = m(x,y)
 for i in xrange(0, lat.size):
     ilat = int(lat[i] + 90.0 - 0.5)
     ilon = int(lon[i] - 0.5)
-    array[ilat,ilon] = seventyfive[i]*100
+    array[ilat,ilon] = five[i]*100
 
 zero = 0.9*np.array([1,0,0]).reshape(1,3)
 ice = np.loadtxt('cmaps/ice.txt')/255;
@@ -45,5 +45,5 @@ m.pcolormesh(x,y,array_mask,vmin=0.0,vmax=10.0, cmap=ice, rasterized=True, edgec
 cbar = m.colorbar()
 cbar.solids.set_edgecolor("face")
 cbar.set_ticks([0,2,4,6,8,10])
-plt.title("VIC - Monthly NSE > 0.75 and Annual Error < 10%")
+plt.title("VIC - Monthly KGE > 0.5 and Annual Error < 10%")
 plt.show()

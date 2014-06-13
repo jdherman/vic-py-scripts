@@ -19,8 +19,8 @@ cdfdist_to_save = np.hstack((lats, lons, np.empty((lats.shape[0], 9), float)))
 cdfdist_to_save[:,2:11] = np.NaN
 spearman_to_save = np.hstack((lats, lons, np.empty((lats.shape[0], 9), float)))
 spearman_to_save[:,2:11] = np.NaN
-error_to_save = np.hstack((lats, lons, np.empty((lats.shape[0], 5), float)))
-error_to_save[:,2:7] = np.NaN
+error_to_save = np.hstack((lats, lons, np.empty((lats.shape[0], 7), float)))
+error_to_save[:,2:9] = np.NaN
 
 # PARAMS: b_infilt, Ds, Dsmax, Ws, layer2depth, layer3depth, rmin, expt, Ksat
 param_mins = np.transpose(np.array([-3.0, -3.0, -1.0, 0.2, 0.1, 0.1, -1.0, 1.0, 2.0]))
@@ -58,48 +58,51 @@ for i in xrange(0, lats.shape[0]):
     obs_sum = np.sum(obs_runoff)
     ann_err = 100*np.absolute((vic_ann_sum - obs_sum)/obs_sum)
 
-    nse_num = np.sum(np.power(np.subtract(vic_runoff,obs_runoff),2),axis=1)
-    nse_den = np.sum(np.power(np.subtract(obs_runoff,np.mean(obs_runoff)),2))
-    nse = 1 - np.divide(nse_num,nse_den)
-    idx1 = np.where(ann_err < 10)
-    idx2 = np.where((ann_err < 10) & (nse > 0.75))
+    # nse_num = np.sum(np.power(np.subtract(vic_runoff,obs_runoff),2),axis=1)
+    # nse_den = np.sum(np.power(np.subtract(obs_runoff,np.mean(obs_runoff)),2))
+    # nse = 1 - np.divide(nse_num,nse_den)
+    
+    # r = np.zeros((10000,1))
+    # a = np.zeros((10000,1))
+    # B = np.zeros((10000,1))
 
+    # for k in xrange(0,10000):
+    #     r[k] = np.corrcoef(vic_runoff[k,:], obs_runoff)[0,1]
+    #     a[k] = np.std(vic_runoff[k,:])/np.std(obs_runoff)
+    #     B[k] = np.mean(vic_runoff[k,:])/np.mean(obs_runoff)
+    # kge = 1 - np.sqrt(np.power(r-1,2) + np.power(a-1,2) + np.power(B-1,2))
+
+    r_num = np.sum(np.multiply(np.subtract(vic_runoff,np.reshape(np.mean(vic_runoff,axis=1),(10000,1))),np.subtract(obs_runoff,np.mean(obs_runoff))),axis=1)
+    r_den1 = np.sqrt(np.sum(np.power(np.subtract(vic_runoff,np.reshape(np.mean(vic_runoff,axis=1),(10000,1))),2),axis=1))
+    r_den2 = np.sqrt(np.sum(np.power(np.subtract(obs_runoff,np.mean(obs_runoff)),2)))
+    r = np.divide(r_num,np.multiply(r_den1,r_den2))
+
+    a = np.std(vic_runoff,axis=1)/np.std(obs_runoff)
+    B = np.mean(vic_runoff,axis=1)/np.mean(obs_runoff)
+    kge = 1 - np.sqrt(np.power(r-1,2) + np.power(a-1,2) + np.power(B-1,2))
+
+    kge = np.reshape(kge,(10000,))
     ann_err = np.reshape(ann_err, (10000,))
-    zero = nse[(nse > 0.0) & (ann_err < 10)].size/nse.size
-    five = nse[(nse > 0.5) & (ann_err < 10)].size/nse.size
-    seventyfive = nse[(nse > 0.75) & (ann_err < 10)].size/nse.size
-    eight = nse[(nse > 0.8) & (ann_err < 10)].size/nse.size
-    nine = nse[(nse > 0.9) & (ann_err < 10)].size/nse.size
+    # five = kge[(kge > 0.5) & (ann_err < 10)].size/kge.size
+    # seventyfive = kge[(kge > 0.75) & (ann_err < 10)].size/kge.size
+    # eight = kge[(kge > 0.8) & (ann_err < 10)].size/kge.size
+    # nine = kge[(kge > 0.9) & (ann_err < 10)].size/kge.size
 
-    error_to_save[i,2:7] = [zero, five, seventyfive, eight, nine]
+    # error_to_save[i,2:9] = [np.min(kge), np.mean(kge), np.max(kge), five,seventyfive,eight,nine];
 
-    # vic_ratio = np.divide(vic_runoff,vic_ann_sum)
-    # obs_ratio = np.divide(obs_runoff,obs_sum)
-    # mon_err = 100*np.max(np.absolute(np.subtract(vic_ratio,obs_ratio)),axis=1)
+    idx1 = np.where(ann_err < 10)[0]
+    idx2 = np.where((ann_err < 10) & (kge > 0.5))[0]
 
-    # ann_err = np.reshape(ann_err, (10000,))
-    # twenty = mon_err[(mon_err < 20) & (ann_err < 10)].size/mon_err.size
-    # ten = mon_err[(mon_err < 10) & (ann_err < 10)].size/mon_err.size
-    # five = mon_err[(mon_err < 5) & (ann_err < 10)].size/mon_err.size
-    # one = mon_err[(mon_err < 1) & (ann_err < 10)].size/mon_err.size
-
-    # twenty = mon_err[mon_err < 20].size/mon_err.size
-    # ten= mon_err[mon_err < 10].size/mon_err.size
-    # five = mon_err[mon_err < 5].size/mon_err.size
-    # one = mon_err[mon_err < 1].size/mon_err.size
-
-    # error_to_save[i,2:9] = [np.min(mon_err), np.mean(mon_err), np.max(mon_err), twenty, ten, five, one];
-
-    if idx1[0].size > 0:
+    if idx1.size > 0 and idx2.size > 0:
         params1 = iparams[idx1,:]
         params2 = iparams[idx2,:]
         # cdf distance calculations
         for k in range(0, params1.shape[1]):
             ecdf1 = sm.distributions.ECDF(params1[:,k])
             pecdf1[:,k] = ecdf1(x)
-            ecdf2 = sm.distributions.ECDF(params2[:,k])
-            pecdf2[:,k] = ecdf2(x)
-            y = np.absolute(pecdf1[:,k]-pecdf2[:,k])
+            # ecdf2 = sm.distributions.ECDF(params2[:,k])
+            # pecdf2[:,k] = ecdf2(x)
+            y = np.absolute(iecdf[:,k]-pecdf1[:,k])
             cdfdist_to_save[i,k+2] = np.trapz(y,x)
 
         # spearman with behavioral parameters and daily quantiles
@@ -110,14 +113,15 @@ for i in xrange(0, lats.shape[0]):
         fp.close()
 
         for k in range(0, params2.shape[1]):
-          rho,p = stats.spearmanr(params2[:,k],Q99) # OR Q99
+          rho,p = stats.spearmanr(params2[:,k],Q1) # OR Q99
           if p < 0.01:
             spearman_to_save[i,k+2] = rho
           else:
             spearman_to_save[i,k+2] = 0
         
-np.savetxt('vic_hcube_param_cdfdist_monthly.txt', cdfdist_to_save)
-np.savetxt('vic_hcube_param_spearman_monthly.txt', spearman_to_save)
-np.savetxt('vic_error_9p_10k_monthly_nse.txt', error_to_save)
+np.savetxt('vic_hcube_param_cdfdist.txt', cdfdist_to_save)
+np.savetxt('vic_hcube_spearman_monthly_p1.txt', spearman_to_save)
+# np.savetxt('vic_error_9p_10k_monthly_kge.txt', error_to_save)
 
 fp_obs.close()
+

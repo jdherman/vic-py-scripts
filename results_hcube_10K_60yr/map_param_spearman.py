@@ -5,7 +5,7 @@ from mpl_toolkits.basemap import Basemap
 import matplotlib as mpl
 from mapformat import mapformat
 
-filename = 'vic_hcube_spearman_p99.txt'
+filename = 'vic_hcube_spearman_monthly_p1.txt'
 
 m = mapformat()
 pname = ['b_infilt', 'Ds', 'Dsmax', 'Ws', 'layer2depth', 'layer3depth', 'rmin', 'expt', 'Ksat']
@@ -51,4 +51,4 @@ for p in xrange(0,len(pname)):
   cbar.solids.set_edgecolor("face")
   cbar.set_ticks([-1,-0.5,0,0.5,1])
   plt.title(pname[p])
-  plt.savefig('figures/spearman/p99_p%d' % p + '_%s' % pname[p] + '.svg')
+  plt.savefig('figures/spearman_monthly/p1_p%d' % p + '_%s' % pname[p] + '.svg')
