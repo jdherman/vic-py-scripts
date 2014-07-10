@@ -5,7 +5,7 @@ from mpl_toolkits.basemap import Basemap
 import matplotlib as mpl
 from mapformat import mapformat
 
-filename = 'vic_hcube_param_cdfdist.txt'
+filename = 'vic_hcube_param_cdfdist_r75.txt'
 
 m = mapformat()
 pname = ['b_infilt', 'Ds', 'Dsmax', 'Ws', 'layer2depth', 'layer3depth', 'rmin', 'expt', 'Ksat']
@@ -51,4 +51,4 @@ for p in xrange(0,len(pname)):
   cbar.solids.set_edgecolor("face")
   cbar.set_ticks([0,0.1,0.2,0.3,0.4,0.5])
   plt.title(pname[p])
-  plt.savefig('figures/cdfdist/p%d' % p + '_%s' % pname[p] + '.svg')
+  plt.savefig('figures/cdfdist_monthly_r75/p%d' % p + '_%s' % pname[p] + '.svg')

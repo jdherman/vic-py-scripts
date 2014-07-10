@@ -83,6 +83,9 @@ for i in xrange(0, lats.shape[0]):
 
     kge = np.reshape(kge,(10000,))
     ann_err = np.reshape(ann_err, (10000,))
+    r = np.reshape(r, (10000,))
+    a = np.reshape(a, (10000,))
+
     # five = kge[(kge > 0.5) & (ann_err < 10)].size/kge.size
     # seventyfive = kge[(kge > 0.75) & (ann_err < 10)].size/kge.size
     # eight = kge[(kge > 0.8) & (ann_err < 10)].size/kge.size
@@ -91,7 +94,7 @@ for i in xrange(0, lats.shape[0]):
     # error_to_save[i,2:9] = [np.min(kge), np.mean(kge), np.max(kge), five,seventyfive,eight,nine];
 
     idx1 = np.where(ann_err < 10)[0]
-    idx2 = np.where((ann_err < 10) & (kge > 0.5))[0]
+    idx2 = np.where((ann_err < 10) & (r > 0.75))[0]
 
     if idx1.size > 0 and idx2.size > 0:
         params1 = iparams[idx1,:]
@@ -100,9 +103,9 @@ for i in xrange(0, lats.shape[0]):
         for k in range(0, params1.shape[1]):
             ecdf1 = sm.distributions.ECDF(params1[:,k])
             pecdf1[:,k] = ecdf1(x)
-            # ecdf2 = sm.distributions.ECDF(params2[:,k])
-            # pecdf2[:,k] = ecdf2(x)
-            y = np.absolute(iecdf[:,k]-pecdf1[:,k])
+            ecdf2 = sm.distributions.ECDF(params2[:,k])
+            pecdf2[:,k] = ecdf2(x)
+            y = np.absolute(pecdf2[:,k]-pecdf1[:,k])
             cdfdist_to_save[i,k+2] = np.trapz(y,x)
 
         # spearman with behavioral parameters and daily quantiles
@@ -113,14 +116,14 @@ for i in xrange(0, lats.shape[0]):
         fp.close()
 
         for k in range(0, params2.shape[1]):
-          rho,p = stats.spearmanr(params2[:,k],Q1) # OR Q99
+          rho,p = stats.spearmanr(params2[:,k],Q99) # OR Q99
           if p < 0.01:
             spearman_to_save[i,k+2] = rho
           else:
             spearman_to_save[i,k+2] = 0
         
-np.savetxt('vic_hcube_param_cdfdist.txt', cdfdist_to_save)
-np.savetxt('vic_hcube_spearman_monthly_p1.txt', spearman_to_save)
+np.savetxt('vic_hcube_param_cdfdist_r75.txt', cdfdist_to_save)
+np.savetxt('vic_hcube_spearman_monthly_p99_r75.txt', spearman_to_save)
 # np.savetxt('vic_error_9p_10k_monthly_kge.txt', error_to_save)
 
 fp_obs.close()
