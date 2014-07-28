@@ -19,6 +19,8 @@ cdfdist_to_save = np.hstack((lats, lons, np.empty((lats.shape[0], 9), float)))
 cdfdist_to_save[:,2:11] = np.NaN
 spearman_to_save = np.hstack((lats, lons, np.empty((lats.shape[0], 9), float)))
 spearman_to_save[:,2:11] = np.NaN
+spearman_p_to_save = np.hstack((lats, lons, np.empty((lats.shape[0], 9), float)))
+spearman_p_to_save[:,2:11] = np.NaN
 error_to_save = np.hstack((lats, lons, np.empty((lats.shape[0], 7), float)))
 error_to_save[:,2:9] = np.NaN
 
@@ -100,13 +102,13 @@ for i in xrange(0, lats.shape[0]):
         params1 = iparams[idx1,:]
         params2 = iparams[idx2,:]
         # cdf distance calculations
-        for k in range(0, params1.shape[1]):
-            ecdf1 = sm.distributions.ECDF(params1[:,k])
-            pecdf1[:,k] = ecdf1(x)
-            ecdf2 = sm.distributions.ECDF(params2[:,k])
-            pecdf2[:,k] = ecdf2(x)
-            y = np.absolute(pecdf2[:,k]-pecdf1[:,k])
-            cdfdist_to_save[i,k+2] = np.trapz(y,x)
+        # for k in range(0, params1.shape[1]):
+        #     ecdf1 = sm.distributions.ECDF(params1[:,k])
+        #     pecdf1[:,k] = ecdf1(x)
+        #     ecdf2 = sm.distributions.ECDF(params2[:,k])
+        #     pecdf2[:,k] = ecdf2(x)
+        #     y = np.absolute(pecdf2[:,k]-pecdf1[:,k])
+        #     cdfdist_to_save[i,k+2] = np.trapz(y,x)
 
         # spearman with behavioral parameters and daily quantiles
         file = '%s' % fdir + 'ensemble-stats-nc/cell_lat_%.6f_long_%.6f.nc' % (lats[i],lons[i])
@@ -116,14 +118,17 @@ for i in xrange(0, lats.shape[0]):
         fp.close()
 
         for k in range(0, params2.shape[1]):
-          rho,p = stats.spearmanr(params2[:,k],Q99) # OR Q99
-          if p < 0.01:
-            spearman_to_save[i,k+2] = rho
-          else:
-            spearman_to_save[i,k+2] = 0
+          rho,p = stats.spearmanr(params2[:,k], Q99) # OR Q99
+          spearman_to_save[i,k+2] = rho
+          spearman_p_to_save[i,k+2] = p
+          # if p < 0.01:
+          #   spearman_to_save[i,k+2] = rho
+          # else:
+          #   spearman_to_save[i,k+2] = 0
         
-np.savetxt('vic_hcube_param_cdfdist_r75.txt', cdfdist_to_save)
+# np.savetxt('vic_hcube_param_cdfdist_r75.txt', cdfdist_to_save)
 np.savetxt('vic_hcube_spearman_monthly_p99_r75.txt', spearman_to_save)
+np.savetxt('vic_hcube_spearman_p_monthly_p99_r75.txt', spearman_p_to_save)
 # np.savetxt('vic_error_9p_10k_monthly_kge.txt', error_to_save)
 
 fp_obs.close()

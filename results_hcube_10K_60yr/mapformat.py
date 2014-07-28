@@ -13,7 +13,7 @@ def mapformat():
   m.drawcoastlines(color='0.6', linewidth=0.5)
   m.drawcountries(color='0.6', linewidth=0.5)
 
-  m.drawparallels(np.arange(-90.,91.,30.), labels=[1,0,0,1], dashes=[1,0], linewidth=0.25, color='0.5')
-  m.drawmeridians(np.arange(0., 360., 60.), labels=[1,0,0,1], dashes=[1,0], linewidth=0.25, color='0.5')
+  m.drawparallels(np.arange(-90.,91.,30.), labels=[1,0,0,1], dashes=[1,1], linewidth=0.25, color='0.5')
+  m.drawmeridians(np.arange(0., 360., 60.), labels=[1,0,0,1], dashes=[1,1], linewidth=0.25, color='0.5')
 
   return m
