@@ -47,12 +47,12 @@ for i in xrange(0, lats.shape[0]):
     r = np.reshape(r, (10000,))
     a = np.reshape(a, (10000,))
 
-    ann20 = kge[(ann_err < 20)].size/kge.size
-    ann10 = kge[(ann_err < 10)].size/kge.size
-    ann10monR50 = kge[(r > 0.5) & (ann_err < 10)].size/kge.size
-    ann10monR75 = kge[(r > 0.75) & (ann_err < 10)].size/kge.size
+    ann20 = kge[(ann_err < 20)].size
+    ann10 = kge[(ann_err < 10)].size
+    ann10monR50 = kge[(r > 0.5) & (ann_err < 10)].size
+    ann10monR75 = kge[(r > 0.75) & (ann_err < 10)].size
     error_to_save[i,2:6] = [ann20, ann10, ann10monR50, ann10monR75];
         
-np.savetxt('vic_error_9p_10k.txt', error_to_save)
+np.savetxt('num_param_sets_meeting_thresholds.txt', error_to_save)
 
 fp_obs.close()

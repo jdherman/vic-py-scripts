@@ -1,6 +1,7 @@
 from __future__ import division
 import numpy as np
 import netCDF4 as nc
+import scipy.stats as st
 
 # LL = np.loadtxt('global_soils_default.txt');
 # LL = LL[:,2:4]
@@ -12,13 +13,12 @@ lats = fp_obs.variables['latitude'][:]
 lons = fp_obs.variables['longitude'][:]
 lats = np.reshape(lats, (lats.shape[0],1))
 lons = np.reshape(lons, (lons.shape[0],1))
+mean, stdev, skew, kurt = [{},{},{},{}]
 
-mean_init = np.hstack((lats, lons, np.empty((lats.shape[0], 9), float)))
-mean_init[:,2:11] = np.NaN
-mean_ann = np.hstack((lats, lons, np.empty((lats.shape[0], 9), float)))
-mean_ann[:,2:11] = np.NaN
-mean_mon = np.hstack((lats, lons, np.empty((lats.shape[0], 9), float)))
-mean_mon[:,2:11] = np.NaN
+for d in [mean,stdev,skew,kurt]:
+    for key in ['init', 'ann', 'mon']:
+        d[key] = np.hstack((lats, lons, np.empty((lats.shape[0], 9), float)))
+        d[key][:,2:11] = np.NaN
 
 # PARAMS: b_infilt, Ds, Dsmax, Ws, layer2depth, layer3depth, rmin, expt, Ksat
 param_mins = np.transpose(np.array([-3.0, -3.0, -1.0, 0.2, 0.1, 0.1, -1.0, 1.0, 2.0]))
@@ -52,18 +52,29 @@ for i in xrange(0, lats.shape[0]):
     r = np.divide(r_num,np.multiply(r_den1,r_den2))
     r = np.reshape(r, (10000,))
 
-    mean_init[i,2:11] = np.mean(iparams, axis=0)
+    mean['init'][i,2:11] = np.mean(iparams, axis=0)
+    stdev['init'][i,2:11] = np.std(iparams, axis=0)
+    skew['init'][i,2:11] = st.skew(iparams, axis=0)
+    kurt['init'][i,2:11] = st.kurtosis(iparams, axis=0)
     idx1 = np.where(ann_err < 10)[0]
     idx2 = np.where((ann_err < 10) & (r > 0.75))[0]
 
     if idx1.size > 0:
-        mean_ann[i,2:11] = np.mean(iparams[idx1,:], axis=0)
+        mean['ann'][i,2:11] = np.mean(iparams[idx1,:], axis=0)
+        stdev['ann'][i,2:11] = np.std(iparams[idx1,:], axis=0)
+        skew['ann'][i,2:11] = st.skew(iparams[idx1,:], axis=0)
+        kurt['ann'][i,2:11] = st.kurtosis(iparams[idx1,:], axis=0)
         if idx2.size > 0:
-            mean_mon[i,2:11] = np.mean(iparams[idx2,:], axis=0)
-        
-np.savetxt('vic_hcube_param_mean_init.txt', mean_init)
-np.savetxt('vic_hcube_param_mean_ann.txt', mean_ann)
-np.savetxt('vic_hcube_param_mean_mon.txt', mean_mon)
+            mean['mon'][i,2:11] = np.mean(iparams[idx2,:], axis=0)
+            stdev['mon'][i,2:11] = np.std(iparams[idx2,:], axis=0)
+            skew['mon'][i,2:11] = st.skew(iparams[idx2,:], axis=0)
+            kurt['mon'][i,2:11] = st.kurtosis(iparams[idx2,:], axis=0)
+
+for key in ['init', 'ann', 'mon']:
+    np.savetxt('vic_hcube_param_mean_%s.txt' % key, mean[key])
+    np.savetxt('vic_hcube_param_stdev_%s.txt' % key, stdev[key])
+    np.savetxt('vic_hcube_param_skew_%s.txt' % key, skew[key])
+    np.savetxt('vic_hcube_param_kurt_%s.txt' % key, kurt[key])
 
 fp_obs.close()
 
